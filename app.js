@@ -54,7 +54,7 @@ const html = `
   </head>
   <body>
     <section>
-      Hello from Render!
+      Sovereign Chess!
     </section>
   </body>
 </html>
