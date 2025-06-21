@@ -1,0 +1,52 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(16, 50px);
+  grid-template-rows: repeat(16, 50px);
+  margin: auto;
+  width: 800px;
+  border: 2px solid #000;
+}
+
+.square {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.light {background-color: tan;}
+.dark {background-color: khaki;}
+.white {background-color: white;}
+.black {background-color: black;}
+.silver {background-color: silver;}
+.gold {background-color: gold;}
+.purple {background-color: purple;}
+.brown {background-color: brown;}
+.royalblue {background-color: royalblue;}
+.orange {background-color: orange;}
+.yellow {background-color: yellow;}
+.green {background-color: green;}
+.red {background-color: red;}
+.blue {background-color: blue;}
+
+.wh {color: white;}
+.bl {color: black;}
+.si {color: silver;}
+.go {color: gold;}
+.pu {color: purple;}
+.br {color: brown;}
+.rb {color: royalblue;}
+.or {color: orange;}
+.ye {color: yellow;}
+.gr {color: green;}
+.re {color: red;}
+.bu {color: blue;}
