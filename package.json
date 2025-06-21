@@ -1,5 +1,5 @@
 {
-  "name": "Sovereign Chess",
+  "name": "sovereign-chess",
   "version": "1.0.0",
   "description": "Sovereign Chess on Render",
   "main": "server.js",
