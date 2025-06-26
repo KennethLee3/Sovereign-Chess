@@ -1,5 +1,46 @@
 let selected = null;
 
+function createRankLabels() {
+  const left = document.getElementById('rankLabelsLeft');
+  const right = document.getElementById('rankLabelsRight');
+  left.innerHTML = '';
+  right.innerHTML = '';
+  for (let i = 16; i >= 1; i--) {
+    const lblLeft = document.createElement('div');
+    lblLeft.textContent = i;
+    lblLeft.style.height = '50px';
+    lblLeft.style.lineHeight = '50px';
+    left.appendChild(lblLeft);
+
+    const lblRight = document.createElement('div');
+    lblRight.textContent = i;
+    lblRight.style.height = '50px';
+    lblRight.style.lineHeight = '50px';
+    right.appendChild(lblRight);
+  }
+}
+
+function createFileLabels() {
+  const top = document.getElementById('fileLabelsTop');
+  const bottom = document.getElementById('fileLabelsBottom');
+  top.innerHTML = '';
+  bottom.innerHTML = '';
+  for (let i = 0; i < 16; i++) {
+    const letter = String.fromCharCode('A'.charCodeAt(0) + i);
+    const lblTop = document.createElement('div');
+    lblTop.textContent = letter;
+    lblTop.style.height = '30px';
+    lblTop.style.lineHeight = '30px';
+    top.appendChild(lblTop);
+
+    const lblBottom = document.createElement('div');
+    lblBottom.textContent = letter;
+    lblBottom.style.height = '30px';
+    lblBottom.style.lineHeight = '30px';
+    bottom.appendChild(lblBottom);
+  }
+}
+
 window.onload = function() {
   const SIZE = 16;
   let board = [
@@ -64,7 +105,7 @@ window.onload = function() {
       square.classList.add(sColor[r][c]);
       square.classList.add(pColor[r][c]);
       square.textContent = board[r][c];
-      square.id = 'sq-${r}-${c}';
+      square.id = `sq-${r}-${c}`;
 
       square.addEventListener("click", () => {
         if (!selected) {
@@ -93,4 +134,16 @@ window.onload = function() {
       document.getElementById('board').appendChild(square);
     }
   }
+
+  createRankLabels();
+  createFileLabels();
+
+  // Add event listener for mode selection if needed:
+  document.querySelectorAll('input[name="gameMode"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      console.log(`Game mode changed to ${e.target.value}`);
+      // TODO: react to mode change as needed
+    });
+  });
+
 }
