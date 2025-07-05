@@ -4,11 +4,33 @@ const SIZE = 16;
 function getBoardString() {
   let string = "";
   let emptySquares = 0;
-  for (let r = SIZE - 1; r >= 0; r--) {
+  let prevColor = "";
+  for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       let square = document.getElementById(`sq-${r}-${c}`);
-      string += square.textContent;
+      if (square.textContent == " ") {
+        emptySquares += 1;
+      }
+      else {
+        if (emptySquares > 0) {
+          string += (emptySquares.toString(16));
+          emptySquares = 0;
+          prevColor = "";
+        }
+        pieceColor = square.classList[2];
+        if (prevColor != pieceColor) {
+          string += pieceColor;
+          prevColor = pieceColor;
+        }
+        string += square.textContent;
+      }
     }
+    if (emptySquares > 0) {
+      string += (emptySquares.toString(16));
+      emptySquares = 0;
+      prevColor = "";
+    }
+    string += "/";
   }
   return string;
 }
@@ -72,22 +94,22 @@ window.onload = function() {
       ['Q', 'B', 'R', 'N', 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R', 'N', 'R', 'B', 'Q']
   ];
   let pColor = [
-      ['go', 'go', 'br', 'br', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'ye', 'ye', 'si', 'si'],
-      ['go', 'go', 'br', 'br', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'ye', 'ye', 'si', 'si'],
-      ['bu', 'bu', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'or', 'or'],
-      ['bu', 'bu', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'or', 'or'],
-      ['rb', 'rb', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 're', 're'],
-      ['rb', 'rb', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 're', 're'],
-      ['gr', 'gr', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'pu', 'pu'],
-      ['gr', 'gr', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'pu', 'pu'],
-      ['ye', 'ye', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'br', 'br'],
-      ['ye', 'ye', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'br', 'br'],
-      ['or', 'or', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bu', 'bu'],
-      ['or', 'or', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bu', 'bu'],
-      ['re', 're', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'rb', 'rb'],
-      ['re', 're', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'bl', 'rb', 'rb'],
-      ['si', 'si', 'pu', 'pu', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'gr', 'gr', 'go', 'go'],
-      ['si', 'si', 'pu', 'pu', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'wh', 'gr', 'gr', 'go', 'go']
+      ['g', 'g', 'n', 'n', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'y', 'y', 's', 's'],
+      ['g', 'g', 'n', 'n', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'y', 'y', 's', 's'],
+      ['u', 'u', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'o', 'o'],
+      ['u', 'u', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'o', 'o'],
+      ['x', 'x', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'r', 'r'],
+      ['x', 'x', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'r', 'r'],
+      ['z', 'z', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'p', 'p'],
+      ['z', 'z', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'p', 'p'],
+      ['y', 'y', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'n', 'n'],
+      ['y', 'y', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'n', 'n'],
+      ['o', 'o', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'u', 'u'],
+      ['o', 'o', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'u', 'u'],
+      ['r', 'r', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'x', 'x'],
+      ['r', 'r', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'x', 'x'],
+      ['s', 's', 'p', 'p', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'z', 'z', 'g', 'g'],
+      ['s', 's', 'p', 'p', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'z', 'z', 'g', 'g']
   ];
   const sColor = [
       ['light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark'],

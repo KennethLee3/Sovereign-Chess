@@ -8,15 +8,23 @@
     <div id="container">
       <div id="leftPanel">
         <div id="nameBox">
-          <label for="playerName">Player Name:</label><br />
+          <h3>Player Name</h3>
           <input type="text" id="playerName" placeholder="Enter your name" />
         </div>
 
         <div id="modeSelector">
-          <label for="gameMode">Game Mode:</label>
+          <h3>Game Mode</h3>
           <label><input type="radio" name="gameMode" value="pvp" checked />Player vs Player</label>
           <label><input type="radio" name="gameMode" value="pvc" />Player vs Engine</label>
         </div>
+
+        <div id="saveRestore">
+          <h3>Save / Restore</h3>
+          <p id="positionString"> (position string will go here)</p>
+          <input type = "text" id="positionInput" placeholder="Restore position" /><br />
+          <button id="restoreBtn">Restore</button>
+        </div>
+
 
         <div>
           <p>Last move: <span id="status">None</span></p>

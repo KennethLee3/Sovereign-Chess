@@ -38,16 +38,42 @@ body {
   color: white;
 }
 
-#modeSelector label {
-  display: block;
-  cursor: pointer;
-  margin: 8px 0;
-}
-
 #modeSelector input[type="radio"] {
   margin-right: 8px;
   cursor: pointer;
 }
+
+#saveRestore {
+  margin-top: 20px;
+  text-align: left;
+}
+
+#positionString {
+  background: #222;
+  padding: 5px;
+  border: 1px solid #555;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#positionInput {
+  width: 100%;
+  padding: 6px;
+  font-size: 16px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #666;
+  background: #222;
+  color: white;
+}
+
+#restoreBtn {
+  margin-top: 5px;
+  font-size: 16px;
+  padding: 4px 10px;
+}
+
 
 /* Board wrapper with labels */
 #boardWrapper {
@@ -154,15 +180,15 @@ body {
 .red {background-color: red;}
 .blue {background-color: blue;}
 
-.wh {color: white;}
-.bl {color: black;}
-.si {color: silver;}
-.go {color: gold;}
-.pu {color: purple;}
-.br {color: brown;}
-.rb {color: royalblue;}
-.or {color: orange;}
-.ye {color: yellow;}
-.gr {color: green;}
-.re {color: red;}
-.bu {color: blue;}
+.w {color: white;}
+.k {color: black;}
+.s {color: silver;}
+.g {color: gold;}
+.p {color: purple;}
+.n {color: brown;}
+.x {color: royalblue;}
+.o {color: orange;}
+.y {color: yellow;}
+.z {color: green;}
+.r {color: red;}
+.u {color: blue;}

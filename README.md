@@ -19,14 +19,14 @@ Each rank is described starting from 16 down to 1, separated by a forward slash 
 | Color | Symbol |
 | ----- | ------ |
 | White | w |
-| Black | b |
+| Black | k |
 | Silver | s |
 | Gold | g |
 | Orange | o |
-| Royal Blue | a |
+| Royal Blue | x |
 | Purple | p |
 | Brown | n |
 | Yellow | y |
-| Green | e |
+| Green | z |
 | Red | r |
-| Blue | l |
+| Blue | u |
