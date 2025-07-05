@@ -8,6 +8,10 @@ app.use(express.json()); // parse JSON POST requests
 
 // API endpoint to process a move
 app.post("/move", (req, res) => {
+  let board = req.body.board;
+  console.log(board);
+  console.log(req.body.from);
+  console.log(req.body.to);
   const { from, to } = req.body;
 
   // Just a mock response for now
@@ -16,7 +20,7 @@ app.post("/move", (req, res) => {
 
   res.json({
     valid: true,
-    engineMove
+    board
   });
 });
 

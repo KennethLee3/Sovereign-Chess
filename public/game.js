@@ -1,5 +1,17 @@
 let selected = null;
+const SIZE = 16;
 
+function getBoardString() {
+  let string = "";
+  let emptySquares = 0;
+  for (let r = SIZE - 1; r >= 0; r--) {
+    for (let c = 0; c < SIZE; c++) {
+      let square = document.getElementById(`sq-${r}-${c}`);
+      string += square.textContent;
+    }
+  }
+  return string;
+}
 function createRankLabels() {
   const left = document.getElementById('rankLabelsLeft');
   const right = document.getElementById('rankLabelsRight');
@@ -19,7 +31,6 @@ function createRankLabels() {
     right.appendChild(lblRight);
   }
 }
-
 function createFileLabels() {
   const top = document.getElementById('fileLabelsTop');
   const bottom = document.getElementById('fileLabelsBottom');
@@ -42,7 +53,6 @@ function createFileLabels() {
 }
 
 window.onload = function() {
-  const SIZE = 16;
   let board = [
       ['Q', 'B', 'R', 'N', 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R', 'N', 'R', 'B', 'Q'],
       ['R', 'N', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'N', 'R'],
@@ -108,6 +118,8 @@ window.onload = function() {
       square.id = `sq-${r}-${c}`;
 
       square.addEventListener("click", () => {
+        let board = getBoardString();
+        console.log(board);
         if (!selected) {
           selected = square.id;
           square.style.border = "2px solid red";
@@ -120,15 +132,17 @@ window.onload = function() {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ from, to })
+            body: JSON.stringify({ board, from, to })
           })
             .then((res) => res.json())
             .then((data) => {
-              document.getElementById("status").textContent += ` | Engine: ${data.engineMove}`;
+              board = data.board;
+              //document.getElementById("status").textContent += ` | Engine: ${data.engineMove}`;
             });
           document.getElementById(selected).style.border = "1px solid #999";
           selected = null;
         }
+        console.log("Response: " + board);
       });
 
       document.getElementById('board').appendChild(square);
