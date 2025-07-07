@@ -1,4 +1,7 @@
 let selected = null;
+const colorString = "wksgoxpnyzru";
+const pieceString = "KQRBNP";
+const startPosition = "gQBnRNkRNBQKBNRyNRsBQ/gRNnPPkPPPPPPPPyPPsNR/uBPcoPB/uQPcoPQ/xRPcrPR/xNPcrPN/zBPcpPB/zQPcpPQ/yQPcnPQ/yBPcnPB/oNPcuPN/oRPcuPR/rQPcxPQ/rBPcxPB/sRNpPPwPPPPPPPPzPPgNR/sQBpRNwRNBQKBNRzNRgBQ/";
 const SIZE = 16;
 
 function getBoardString() {
@@ -33,6 +36,44 @@ function getBoardString() {
     string += "/";
   }
   return string;
+}
+function setBoardFromString(inputString = startPosition) {
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      let currColor = null;
+      let firstChar = inputString.charAt(0);
+
+      // Check if the color gets set first.
+      if (colorString.includes(firstChar)) {
+        currColor = firstChar;
+        inputString = inputString.substring(1);
+        firstChar = inputString.charAt(0);
+      }
+
+      // Check if a piece should be placed.
+      if (pieceString.includes(firstChar)) {
+        let square = document.getElementById(`sq-${r}-${c}`);
+        square.textContent = firstChar;
+        square.classList[2] = currColor;
+      }
+      // Squares should be blanked. 
+      else {
+        let length = parseInt(firstChar, 16);
+        for (let x = c; x < c + length; x++) {
+          let square = document.getElementById(`sq-${r}-${x}`);
+          square.textContent = "";
+        }
+        c += length;
+      }
+      inputString = inputString.substring(1);
+    }
+    if (inputString.charAt(0) == "/") {
+      inputString = inputString.substring(1);
+    }
+    else {
+      console.error("Error: expected (/) but received (" + inputString.charAt(0) + ").");
+    }
+  }
 }
 function createRankLabels() {
   const left = document.getElementById('rankLabelsLeft');
@@ -141,7 +182,7 @@ window.onload = function() {
 
       square.addEventListener("click", () => {
         let board = getBoardString();
-        console.log(board);
+        //console.log(board);
         if (!selected) {
           selected = square.id;
           square.style.border = "2px solid red";
@@ -164,7 +205,8 @@ window.onload = function() {
           document.getElementById(selected).style.border = "1px solid #999";
           selected = null;
         }
-        console.log("Response: " + board);
+        //console.log("Response: " + board);
+        document.getElementById("positionString").textContent = board;
       });
 
       document.getElementById('board').appendChild(square);
@@ -180,6 +222,11 @@ window.onload = function() {
       console.log(`Game mode changed to ${e.target.value}`);
       // TODO: react to mode change as needed
     });
+  });
+
+  document.getElementById("restoreBtn").addEventListener("click", () => {
+    const input = document.getElementById("positionInput").value.trim();
+    setBoardFromString();
   });
 
 }
