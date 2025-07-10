@@ -11,7 +11,7 @@ function getBoardString() {
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       let square = document.getElementById(`sq-${r}-${c}`);
-      if (square.textContent == " ") {
+      if (square.textContent == "") {
         emptySquares += 1;
       }
       else {
@@ -40,6 +40,12 @@ function getBoardString() {
 function setBoardFromString(inputString = startPosition) {
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
+      document.getElementById(`sq-${r}-${c}`).textContent = "";
+      document.getElementById(`sq-${r}-${c}`).classList[2] = "";
+    }
+  }
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
       let currColor = null;
       let firstChar = inputString.charAt(0);
 
@@ -62,8 +68,9 @@ function setBoardFromString(inputString = startPosition) {
         for (let x = c; x < c + length; x++) {
           let square = document.getElementById(`sq-${r}-${x}`);
           square.textContent = "";
+          square.classList[2] = "";
         }
-        c += length;
+        c += length - 1;
       }
       inputString = inputString.substring(1);
     }
@@ -177,7 +184,7 @@ window.onload = function() {
       square.classList.add('square');
       square.classList.add(sColor[r][c]);
       square.classList.add(pColor[r][c]);
-      square.textContent = board[r][c];
+      //square.textContent = board[r][c];
       square.id = `sq-${r}-${c}`;
 
       square.addEventListener("click", () => {
@@ -187,8 +194,9 @@ window.onload = function() {
           selected = square.id;
           square.style.border = "2px solid red";
         } else {
-          const from = selected.split("-").slice(1).join("");
-          const to = square.id.split("-").slice(1).join("");
+          const from = String.fromCharCode(Number(selected.split("-")[2]) + 65) + (16 - selected.split("-")[1]).toString();
+          const to = String.fromCharCode(Number(square.id.split("-")[2]) + 65) + (16 - square.id.split("-")[1]).toString();
+          
           document.getElementById("status").textContent = `You moved ${from} → ${to}`;
           fetch("/move", {
             method: "POST",
@@ -213,6 +221,8 @@ window.onload = function() {
     }
   }
 
+  setBoardFromString();
+  document.getElementById("positionString").textContent = getBoardString();
   createRankLabels();
   createFileLabels();
 
@@ -226,7 +236,7 @@ window.onload = function() {
 
   document.getElementById("restoreBtn").addEventListener("click", () => {
     const input = document.getElementById("positionInput").value.trim();
-    setBoardFromString();
+    setBoardFromString(input);
   });
 
 }
