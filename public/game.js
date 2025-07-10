@@ -1,7 +1,7 @@
 let selected = null;
 const colorString = "wksgoxpnyzru";
 const pieceString = "KQRBNP";
-const startPosition = "gQBnRNkRNBQKBNRyNRsBQ/gRNnPPkPPPPPPPPyPPsNR/uBPcoPB/uQPcoPQ/xRPcrPR/xNPcrPN/zBPcpPB/zQPcpPQ/yQPcnPQ/yBPcnPB/oNPcuPN/oRPcuPR/rQPcxPQ/rBPcxPB/sRNpPPwPPPPPPPPzPPgNR/sQBpRNwRNBQKBNRzNRgBQ/";
+const startPosition = "gQBnRNkRNBQKBNRyNRsBQ/gRNnPPkPPPPPPPPyPPsNR/uBPcoPB/uQPcoPQ/xRPcrPR/xNPcrPN/zBPcpPB/zQPcpPQ/yQPcnPQ/yBPcnPB/oNPcuPN/oRPcuPR/rQPcxPQ/rBPcxPB/sRNpPPwPPPPPPPPzPPgNR/sQBpRNwRNBQKBNRzNRgBQ/w";
 const SIZE = 16;
 
 function getBoardString() {
@@ -35,6 +35,7 @@ function getBoardString() {
     }
     string += "/";
   }
+  string += document.getElementById("turnBox").style.backgroundColor === "white" ? "w" : "k";
   return string;
 }
 function setBoardFromString(inputString = startPosition) {
@@ -81,6 +82,7 @@ function setBoardFromString(inputString = startPosition) {
       console.error("Error: expected (/) but received (" + inputString.charAt(0) + ").");
     }
   }
+  updateTurnIndicator(inputString.charAt(0));
 }
 function createRankLabels() {
   const left = document.getElementById('rankLabelsLeft');
@@ -120,6 +122,10 @@ function createFileLabels() {
     lblBottom.style.lineHeight = '30px';
     bottom.appendChild(lblBottom);
   }
+}
+function updateTurnIndicator(turnColor) {
+  const turnBox = document.getElementById("turnBox");
+  turnBox.style.backgroundColor = turnColor === "w" ? "white" : "black";
 }
 
 window.onload = function() {
