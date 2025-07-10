@@ -82,6 +82,7 @@ function setBoardFromString(inputString = startPosition) {
       console.error("Error: expected (/) but received (" + inputString.charAt(0) + ").");
     }
   }
+  document.getElementById("positionString").textContent = getBoardString();
   updateTurnIndicator(inputString.charAt(0));
 }
 function createRankLabels() {
@@ -214,6 +215,7 @@ window.onload = function() {
             .then((res) => res.json())
             .then((data) => {
               board = data.board;
+              setBoardFromString(board);
               //document.getElementById("status").textContent += ` | Engine: ${data.engineMove}`;
             });
           document.getElementById(selected).style.border = "1px solid #999";
@@ -228,7 +230,6 @@ window.onload = function() {
   }
 
   setBoardFromString();
-  document.getElementById("positionString").textContent = getBoardString();
   createRankLabels();
   createFileLabels();
 

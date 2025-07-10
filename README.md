@@ -30,3 +30,5 @@ Each rank is described starting from 16 down to 1 and is followed by a forward s
 | Green | z |
 | Red | r |
 | Blue | u |
+
+Starting board position example: gQBnRNkRNBQKBNRyNRsBQ/gRNnPPkPPPPPPPPyPPsNR/uBPcoPB/uQPcoPQ/xRPcrPR/xNPcrPN/zBPcpPB/zQPcpPQ/yQPcnPQ/yBPcnPB/oNPcuPN/oRPcuPR/rQPcxPQ/rBPcxPB/sRNpPPwPPPPPPPPzPPgNR/sQBpRNwRNBQKBNRzNRgBQ/w
