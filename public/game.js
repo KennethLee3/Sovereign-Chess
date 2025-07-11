@@ -130,6 +130,16 @@ function updateTurnIndicator(turnColor) {
   const turnBox = document.getElementById("turnBox");
   turnBox.style.backgroundColor = turnColor === "w" ? "white" : "black";
 }
+function isValidSquare(square) {
+  turnColor = null;
+  if (turnBox.style.backgroundColor == "white") turnColor = "w";
+  if (turnBox.style.backgroundColor == "black") turnColor = "k";
+
+  if (square.classList[2] == turnColor) {
+    return true;
+  }
+  return false;
+}
 
 window.onload = function() {
   const sColor = [
@@ -161,8 +171,10 @@ window.onload = function() {
       square.addEventListener("click", () => {
         let board = getBoardString();
         if (!selected) {
-          selected = square.id;
-          square.style.border = "2px solid red";
+          if (isValidSquare(document.getElementById(square.id))) {
+            selected = square.id;
+            square.style.border = "2px solid red";
+          }
         } else {
           const from = String.fromCharCode(Number(selected.split("-")[2]) + 65) + (16 - selected.split("-")[1]).toString();
           const to = String.fromCharCode(Number(square.id.split("-")[2]) + 65) + (16 - square.id.split("-")[1]).toString();
