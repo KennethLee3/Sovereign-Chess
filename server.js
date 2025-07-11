@@ -83,7 +83,15 @@ function conductMove(inputString, from, to) {
   }
   turn = inputString.charAt(0);
 
+  let fromC = Number(from.charAt(0).charCodeAt()) - 65;
+  let fromR = 16 - Number(from.substring(1));
+  let toC = Number(to.charAt(0).charCodeAt()) - 65;
+  let toR = 16 - Number(to.substring(1));
 
+  board[toR][toC] = board[fromR][fromC];
+  color[toR][toC] = color[fromR][fromC];
+  board[fromR][fromC] = "";
+  color[fromR][fromC] = "";
   
   let string = "";
   let emptySquares = 0;

@@ -42,12 +42,15 @@ function setBoardFromString(inputString = startPosition) {
   for (let r = 0; r < SIZE; r++) {
     for (let c = 0; c < SIZE; c++) {
       document.getElementById(`sq-${r}-${c}`).textContent = "";
-      document.getElementById(`sq-${r}-${c}`).classList[2] = "";
+      for (let n = 0; n < colorString.length; n++) {
+        document.getElementById(`sq-${r}-${c}`).classList.remove(colorString.charAt(n));
+      }
     }
   }
   for (let r = 0; r < SIZE; r++) {
+    let currColor = null;
+
     for (let c = 0; c < SIZE; c++) {
-      let currColor = null;
       let firstChar = inputString.charAt(0);
 
       // Check if the color gets set first.
@@ -61,7 +64,7 @@ function setBoardFromString(inputString = startPosition) {
       if (pieceString.includes(firstChar)) {
         let square = document.getElementById(`sq-${r}-${c}`);
         square.textContent = firstChar;
-        square.classList[2] = currColor;
+        square.classList.add(currColor);
       }
       // Squares should be blanked. 
       else {
@@ -69,7 +72,6 @@ function setBoardFromString(inputString = startPosition) {
         for (let x = c; x < c + length; x++) {
           let square = document.getElementById(`sq-${r}-${x}`);
           square.textContent = "";
-          square.classList[2] = "";
         }
         c += length - 1;
       }
@@ -130,42 +132,6 @@ function updateTurnIndicator(turnColor) {
 }
 
 window.onload = function() {
-  let board = [
-      ['Q', 'B', 'R', 'N', 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R', 'N', 'R', 'B', 'Q'],
-      ['R', 'N', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'N', 'R'],
-      ['B', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'B'],
-      ['Q', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'Q'],
-      ['R', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'R'],
-      ['N', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'N'],
-      ['B', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'B'],
-      ['Q', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'Q'],
-      ['Q', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'Q'],
-      ['B', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'B'],
-      ['N', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'N'],
-      ['R', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'R'],
-      ['Q', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'Q'],
-      ['B', 'P', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'P', 'B'],
-      ['R', 'N', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'N', 'R'],
-      ['Q', 'B', 'R', 'N', 'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R', 'N', 'R', 'B', 'Q']
-  ];
-  let pColor = [
-      ['g', 'g', 'n', 'n', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'y', 'y', 's', 's'],
-      ['g', 'g', 'n', 'n', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'y', 'y', 's', 's'],
-      ['u', 'u', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'o', 'o'],
-      ['u', 'u', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'o', 'o'],
-      ['x', 'x', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'r', 'r'],
-      ['x', 'x', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'r', 'r'],
-      ['z', 'z', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'p', 'p'],
-      ['z', 'z', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'p', 'p'],
-      ['y', 'y', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'n', 'n'],
-      ['y', 'y', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'n', 'n'],
-      ['o', 'o', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'u', 'u'],
-      ['o', 'o', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'u', 'u'],
-      ['r', 'r', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'x', 'x'],
-      ['r', 'r', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'k', 'x', 'x'],
-      ['s', 's', 'p', 'p', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'z', 'z', 'g', 'g'],
-      ['s', 's', 'p', 'p', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'z', 'z', 'g', 'g']
-  ];
   const sColor = [
       ['light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark'],
       ['dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light', 'dark', 'light'],
@@ -190,13 +156,10 @@ window.onload = function() {
       let square = document.createElement('div');
       square.classList.add('square');
       square.classList.add(sColor[r][c]);
-      square.classList.add(pColor[r][c]);
-      //square.textContent = board[r][c];
       square.id = `sq-${r}-${c}`;
 
       square.addEventListener("click", () => {
         let board = getBoardString();
-        //console.log(board);
         if (!selected) {
           selected = square.id;
           square.style.border = "2px solid red";
