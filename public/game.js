@@ -130,13 +130,78 @@ function updateTurnIndicator(turnColor) {
   const turnBox = document.getElementById("turnBox");
   turnBox.style.backgroundColor = turnColor === "w" ? "white" : "black";
 }
+function returnControlColors(pieceColor) {
+  let controlColors = [];
+  for (let r = 4; r < SIZE - 4; r++) {
+    for (let c = 4; c < SIZE - 4; c++) {
+      // Check if this square has a piece of the given color.
+      if (document.getElementById(`sq-${r}-${c}`).classList[2] == pieceColor) {
+        switch (document.getElementById(`sq-${r}-${c}`).classList[1]) {
+          case "light":
+          case "dark":
+          case "white":
+          case "black":
+            break;
+          case "silver":
+            controlColors.push("s");
+            break;
+          case "gold":
+            controlColors.push("g");
+            break;
+          case "purple":
+            controlColors.push("p");
+            break;
+          case "brown":
+            controlColors.push("n");
+            break;
+          case "royalblue":
+            controlColors.push("x");
+            break;
+          case "orange":
+            controlColors.push("o");
+            break;
+          case "yellow":
+            controlColors.push("y");
+            break;
+          case "green":
+            controlColors.push("z");
+            break;
+          case "red":
+            controlColors.push("r");
+            break;
+          case "blue":
+            controlColors.push("u");
+            break;
+        }
+      }
+    }
+  }
+  return controlColors;
+}
 function isValidSquare(square) {
-  turnColor = null;
+  let moveColor = square.classList[2];
+  let turnColor = null;
   if (turnBox.style.backgroundColor == "white") turnColor = "w";
   if (turnBox.style.backgroundColor == "black") turnColor = "k";
 
-  if (square.classList[2] == turnColor) {
+  // Check if an empty square is selected.
+  if (moveColor == "") {
+    return false;
+  }
+  // Check if piece color matches whose turn it is.
+  else if (moveColor == turnColor) {
     return true;
+  }
+  else {
+    let colorControl = [];
+    colorControl.push(turnColor);
+    for (let i = 0; i < 12 && colorControl.length > 0; i++) {
+      let nextColor = colorControl.pop();
+      if (moveColor == nextColor) {
+        return true;
+      }
+      colorControl.push(returnControlColors(nextColor));
+    }
   }
   return false;
 }
