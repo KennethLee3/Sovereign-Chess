@@ -92,6 +92,11 @@ function conductMove(inputString, from, to) {
   color[toR][toC] = color[fromR][fromC];
   board[fromR][fromC] = "";
   color[fromR][fromC] = "";
+
+  // Promote pawns
+  if (board[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
+    board[toR][toC] = "Q";
+  }
   
   let string = "";
   let emptySquares = 0;
