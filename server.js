@@ -214,6 +214,78 @@ function checkRookMovement(board, fromC, fromR, toC, toR) {
   return false;
 }
 function checkBishopMovement(board, fromC, fromR, toC, toR) {
+  // R increasing, C increasing
+  if ((toR - fromR == toC - fromC) && (toR - fromR > 0)) {
+    // Check if moving too far
+    if (toR - fromR > 8) {
+      return false;
+    }
+    // Check if path is empty
+    let r = fromR + 1;
+    let c = fromC + 1;
+    while (r < toR) {
+      if (board[r][c] != "") {
+        return false;
+      }
+      r++;
+      c++;
+    }
+    return true;
+  }
+  // R increasing, C decreasing
+  if ((toR - fromR == fromC - toC) && (toR - fromR > 0)) {
+    // Check if moving too far
+    if (toR - fromR > 8) {
+      return false;
+    }
+    // Check if path is empty
+    let r = fromR + 1;
+    let c = fromC - 1;
+    while (r < toR) {
+      if (board[r][c] != "") {
+        return false;
+      }
+      r++;
+      c--;
+    }
+    return true;
+  }
+  // R decreasing, C increasing
+  if ((fromR - toR == toC - fromC) && (toR - fromR < 0)) {
+    // Check if moving too far
+    if (fromR - toR > 8) {
+      return false;
+    }
+    // Check if path is empty
+    let r = fromR - 1;
+    let c = fromC + 1;
+    while (r > toR) {
+      if (board[r][c] != "") {
+        return false;
+      }
+      r--;
+      c++;
+    }
+    return true;
+  }
+  // R decreasing, C decreasing
+  if ((toR - fromR == toC - fromC) && (toR - fromR < 0)) {
+    // Check if moving too far
+    if (fromR - toR > 8) {
+      return false;
+    }
+    // Check if path is empty
+    let r = fromR - 1;
+    let c = fromC - 1;
+    while (r > toR) {
+      if (board[r][c] != "") {
+        return false;
+      }
+      r--;
+      c--;
+    }
+    return true;
+  }
   return false;
 }
 function checkKnightMovement(board, fromC, fromR, toC, toR) {
