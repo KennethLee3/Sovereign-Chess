@@ -417,7 +417,10 @@ function isAvailableSquare(board, color, fromC, fromR, toC, toR) {
     if (color[toR][toC] == nextColor) {
       return false;
     }
-    colorControl.push(returnControlColors(color, nextColor));
+    let newColors = returnControlColors(color, nextColor);
+    while (newColors.length > 0) {
+      colorControl.push(newColors.pop());
+    }
   }
   return true;
 }
