@@ -399,6 +399,13 @@ function isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) {
     return false;
   }
   // Check if matching square is empty
+  if (sColor[toR][toC] != " ") {
+    if (board[15 - toR][15 - toC] != "") {
+      if (!(fromR == 15 - toR && fromC == 15 - toC)) {
+        return false;
+      }
+    }
+  }
 
   return true;
 }
