@@ -341,27 +341,21 @@ function checkPawnMovement(board, fromC, fromR, toC, toR) {
   }
   // Capture diagonally
   else if (board[toR][toC] != "") {
-    // Capture up
-    if (toR - fromR == 1 && fromR <= 7) {
-      // Capture right
-      if (toC - fromC == 1 && fromC <= 7) {
-        return true;
-      }
-      // Capture left
-      if (fromC - toC == 1 && fromC >= 8) {
-        return true;
-      }
+    // Capture up right
+    if (toR - fromR == 1 && toC - fromC == 1) {
+      return fromR <= 7 || fromC <= 7;
     }
-    // Capture down
-    if (fromR - toR == 1 && fromR >= 8) {
-      // Capture right
-      if (toC - fromC == 1 && fromC <= 7) {
-        return true;
-      }
-      // Capture left
-      if (fromC - toC == 1 && fromC >= 8) {
-        return true;
-      }
+    // Capture up left
+    if (toR - fromR == 1 && fromC - toC == 1) {
+      return fromR <= 7 || fromC >= 8;
+    }
+    // Capture down right
+    if (fromR - toR == 1 && toC - fromC == 1) {
+      return fromR >= 8 || fromC <= 7;
+    }
+    // Capture down left
+    if (fromR - toR == 1 && fromC - toC == 1) {
+      return fromR >= 8 || fromC >= 8;
     }
   }
   return false;
