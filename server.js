@@ -289,7 +289,8 @@ function checkBishopMovement(board, fromC, fromR, toC, toR) {
   return false;
 }
 function checkKnightMovement(board, fromC, fromR, toC, toR) {
-  return false;
+  return (Math.abs(fromC - toC) == 2) && (Math.abs(fromR - toR) == 1) 
+    || (Math.abs(fromC - toC) == 1) && (Math.abs(fromR - toR) == 2);
 }
 function checkPawnMovement(board, fromC, fromR, toC, toR) {
   return false;
