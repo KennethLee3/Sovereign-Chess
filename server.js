@@ -6,14 +6,14 @@ const sColor = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', 'red', ' ', ' ', ' ', ' ', ' ', ' ', 'blue', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', 'yellow', ' ', 'purple', 'brown', ' ', 'green', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', 'silver', ' ', ' ', 'gold', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', 'orange', ' ', 'white', 'black', ' ', 'royalblue', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', 'royalblue', ' ', 'black', 'white', ' ', 'orange', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', 'gold', ' ', ' ', 'silver', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', 'green', ' ', 'brown', 'purple', ' ', 'yellow', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', 'blue', ' ', ' ', ' ', ' ', ' ', ' ', 'red', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', 'r', ' ', ' ', ' ', ' ', ' ', ' ', 'u', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', 'y', ' ', 'p', 'n', ' ', 'z', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', 's', ' ', ' ', 'g', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', 'o', ' ', 'w', 'k', ' ', 'x', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', 'x', ' ', 'k', 'w', ' ', 'o', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', 'g', ' ', ' ', 's', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', 'z', ' ', 'n', 'p', ' ', 'y', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', 'u', ' ', ' ', ' ', ' ', ' ', ' ', 'r', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -99,7 +99,7 @@ function conductMove(inputString, from, to) {
   let toC = Number(to.charAt(0).charCodeAt()) - 65;
   let toR = 16 - Number(to.substring(1));
 
-  if (checkMove(board, color, fromC, fromR, toC, toR)) {
+  if (checkMove(board, color, fromC, fromR, toC, toR, turn)) {
     turn = turn === "w" ? "k" : "w";
 
     board[toR][toC] = board[fromR][fromC];
@@ -148,10 +148,10 @@ function conductMove(inputString, from, to) {
   string += turn;
   return string;
 }
-function checkMove(board, color, fromC, fromR, toC, toR) {
-  //if (!isAvailableSquare(board, color, fromC, fromR, toC, toR)) {
-  //  return false;
-  //}
+function checkMove(board, color, fromC, fromR, toC, toR, turn) {
+  if (!isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+    return false;
+  }
 
   switch (board[fromR][fromC]) {
     case "K":
@@ -366,61 +366,39 @@ function returnControlColors(color, pieceColor) {
     for (let c = 4; c < SIZE - 4; c++) {
       // Check if this square has a piece of the given color.
       if (color[r][c] == pieceColor) {
-        switch (sColor[r][c]) {
-          case " ":
-          case "white":
-            // Don't allow opponent to control opponent's color.
-          case "black":
-            // Don't allow opponent to control opponent's color.
-            break;
-          case "silver":
-            controlColors.push("s");
-            break;
-          case "gold":
-            controlColors.push("g");
-            break;
-          case "purple":
-            controlColors.push("p");
-            break;
-          case "brown":
-            controlColors.push("n");
-            break;
-          case "royalblue":
-            controlColors.push("x");
-            break;
-          case "orange":
-            controlColors.push("o");
-            break;
-          case "yellow":
-            controlColors.push("y");
-            break;
-          case "green":
-            controlColors.push("z");
-            break;
-          case "red":
-            controlColors.push("r");
-            break;
-          case "blue":
-            controlColors.push("u");
-            break;
+        if (sColor[r][c] != " " && sColor[r][c] != "w" && sColor[r][c] != "k") {
+          controlColors.push(sColor[r][c]);
         }
       }
     }
   }
   return controlColors;
 }
-function isAvailableSquare(board, color, fromC, fromR, toC, toR) {
-  let colorControl = [];
-  colorControl.push(color[fromR][fromC]);
-  while(colorControl.length > 0) {
-    let nextColor = colorControl.pop();
-    if (color[toR][toC] == nextColor) {
-      return false;
+function isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) {
+  // Check if there is a piece
+  if (color[toR][toC] == "") {}
+  // Check if opponent controls piece
+  else {
+    let found = false;
+    let colorControl = [];
+    colorControl.push(turn === "w" ? "k" : "w");
+    while(colorControl.length > 0 && !found) {
+      let nextColor = colorControl.pop();
+      if (color[toR][toC] == nextColor) {
+        found = true;
+      }
+      let newColors = returnControlColors(color, nextColor);
+      while (newColors.length > 0) {
+        colorControl.push(newColors.pop());
+      }
     }
-    let newColors = returnControlColors(color, nextColor);
-    while (newColors.length > 0) {
-      colorControl.push(newColors.pop());
-    }
+    if (!found) return false;
   }
+  // Check if square color matches piece color
+  if (color[fromR][fromC] == sColor[toR][toC]) {
+    return false;
+  }
+  // Check if matching square is empty
+
   return true;
 }
