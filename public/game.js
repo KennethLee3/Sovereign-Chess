@@ -200,7 +200,10 @@ function isValidSquare(square) {
       if (moveColor == nextColor) {
         return true;
       }
-      colorControl.push(returnControlColors(nextColor));
+      let newColors = returnControlColors(nextColor);
+      while (newColors.length > 0) {
+        colorControl.push(newColors.pop());
+      }
     }
   }
   return false;
