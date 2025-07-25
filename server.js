@@ -293,6 +293,77 @@ function checkKnightMovement(board, fromC, fromR, toC, toR) {
     || (Math.abs(fromC - toC) == 1) && (Math.abs(fromR - toR) == 2);
 }
 function checkPawnMovement(board, fromC, fromR, toC, toR) {
+  // Move vertically
+  if (board[toR][toC] == "" && fromC == toC) {
+    // Move up two
+    if (toR - fromR == 2 && fromR < 2) {
+      if (board[toR - 1][toC] == "") {
+        return true;
+      }
+    }
+    // Move up one
+    if (toR - fromR == 1 && fromR < 7) {
+      return true;
+    }
+    // Move down two
+    if (fromR - toR == 2 && fromR > 13) {
+      if (board[toR + 1][toC] == "") {
+        return true;
+      }
+    }
+    // Move down one
+    if (fromR - toR == 1 && fromR > 8) {
+      return true;
+    }
+  }
+  // Move horizontally
+  else if (board[toR][toC] == "" && fromR == toR) {
+    // Move right two
+    if (toC - fromC == 2 && fromC < 2) {
+      if (board[toR][toC - 1] == "") {
+        return true;
+      }
+    }
+    // Move right one
+    if (toC - fromC == 1 && fromC < 7) {
+      return true;
+    }
+    // Move left two
+    if (fromC - toC == 2 && fromC > 13) {
+      if (board[toR][toC + 1] == "") {
+        return true;
+      }
+    }
+    // Move left one
+    if (fromC - toC == 1 && fromC > 8) {
+      return true;
+    }
+  }
+  // Capture diagonally
+  else if (board[toR][toC] != "") {
+    // Capture up
+    if (toR - fromR == 1 && fromR <= 7) {
+      // Capture right
+      if (toC - fromC == 1 && fromC <= 7) {
+        return true;
+      }
+      // Capture left
+      if (fromC - toC == 1 && fromC >= 8) {
+        return true;
+      }
+    }
+    // Capture down
+    if (fromR - toR == 1 && fromR >= 8) {
+      // Capture right
+      if (toC - fromC == 1 && fromC <= 7) {
+        return true;
+      }
+      // Capture left
+      if (fromC - toC == 1 && fromC >= 8) {
+        return true;
+      }
+    }
+  }
   return false;
 }
 function returnControlColors(color, pieceColor) {
