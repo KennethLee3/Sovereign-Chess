@@ -250,6 +250,7 @@ window.onload = function() {
         } else {
           const from = String.fromCharCode(Number(selected.split("-")[2]) + 65) + (16 - selected.split("-")[1]).toString();
           const to = String.fromCharCode(Number(square.id.split("-")[2]) + 65) + (16 - square.id.split("-")[1]).toString();
+          const engineLevel = gameMode === "pvc" ? 1 : 0;
           
           document.getElementById("status").textContent = `You moved ${from} → ${to}`;
           fetch("/move", {
@@ -257,7 +258,7 @@ window.onload = function() {
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({ board, from, to })
+            body: JSON.stringify({ board, from, to, engineLevel })
           })
             .then((res) => res.json())
             .then((data) => {
