@@ -168,8 +168,7 @@ body {
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 36px;
 }
 
 .light {background-color: tan;}

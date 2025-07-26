@@ -1,4 +1,6 @@
 let selected = null;
+let gameMode = "pvp";
+const pieceMap = { 'K': '♚', 'Q': '♛', 'R': '♜', 'B': '♝', 'N': '♞', 'P': '♟', '': '', '♚': 'K', '♛': 'Q', '♜': 'R', '♝': 'B', '♞': 'N', '♟': 'P' };
 const colorString = "wksgoxpnyzru";
 const pieceString = "KQRBNP";
 const startPosition = "gQBnRNkRNBQKBNRyNRsBQ/gRNnPPkPPPPPPPPyPPsNR/uBPcoPB/uQPcoPQ/xRPcrPR/xNPcrPN/zBPcpPB/zQPcpPQ/yQPcnPQ/yBPcnPB/oNPcuPN/oRPcuPR/rQPcxPQ/rBPcxPB/sRNpPPwPPPPPPPPzPPgNR/sQBpRNwRNBQKBNRzNRgBQ/w";
@@ -25,7 +27,8 @@ function getBoardString() {
           string += pieceColor;
           prevColor = pieceColor;
         }
-        string += square.textContent;
+        // string += square.textContent;
+        string += pieceMap[square.textContent];
       }
     }
     if (emptySquares > 0) {
@@ -63,7 +66,8 @@ function setBoardFromString(inputString = startPosition) {
       // Check if a piece should be placed.
       if (pieceString.includes(firstChar)) {
         let square = document.getElementById(`sq-${r}-${c}`);
-        square.textContent = firstChar;
+        //square.textContent = firstChar;
+        square.textContent = pieceMap[firstChar];
         square.classList.add(currColor);
       }
       // Squares should be blanked. 
@@ -259,8 +263,8 @@ window.onload = function() {
             .then((data) => {
               board = data.board;
               setBoardFromString(board);
-              //document.getElementById("status").textContent += ` | Engine: ${data.engineMove}`;
             });
+
           document.getElementById(selected).style.border = "1px solid #999";
           selected = null;
         }
@@ -280,7 +284,7 @@ window.onload = function() {
   document.querySelectorAll('input[name="gameMode"]').forEach((radio) => {
     radio.addEventListener('change', (e) => {
       console.log(`Game mode changed to ${e.target.value}`);
-      // TODO: react to mode change as needed
+      gameMode = e.target.value;
     });
   });
 
