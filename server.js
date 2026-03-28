@@ -35,9 +35,11 @@ app.post("/move", (req, res) => {
   const engine = req.body.engineLevel;
   
   console.log(`Old board position: ${board}`);
-  console.log(`Player moved ${from} to ${to}`);
-  board = conductMove(board, from, to);
-  board = engineMove(board, engine);
+  console.log(`Player moved from ${from} to ${to}.`);
+  newBoard = conductMove(board, from, to);
+  if (newBoard != board) {
+    board = engineMove(newBoard, engine);
+  }
   console.log(`New board position: ${board}`);
 
   res.json({
@@ -97,32 +99,35 @@ function engineMove(inputString, engine) {
     }
   }
   turn = inputString.charAt(0);
-  // Switch turns
-  //turn = turn === "w" ? "k" : "w";
 
-  // TODO: encode moves?
-
-  let engineMove = 0;
+  let engineMove = null;
   switch (engine) {
     case 1:
-      //engineMove = getRandomMove(board, color, turn);
+      engineMove = getRandomMove(board, color, turn);
+      console.log(`Engine moved from ${String.fromCharCode(engineMove.fromC + 65)}${16 - engineMove.fromR} to ${String.fromCharCode(engineMove.toC + 65)}${16 - engineMove.toR}.`);
       break;
     default:
       console.error("Unknown engine level.");
       break;
   }
+  
+  // Switch turns
+  turn = turn === "w" ? "k" : "w";
+  
+  let fromC = engineMove.fromC;
+  let fromR = engineMove.fromR;
+  let toC = engineMove.toC;
+  let toR = engineMove.toR;
 
-  // TODO: decode engine move
-
-  //board[toR][toC] = board[fromR][fromC];
-  //color[toR][toC] = color[fromR][fromC];
-  //board[fromR][fromC] = "";
-  //color[fromR][fromC] = "";
+  board[toR][toC] = board[fromR][fromC];
+  color[toR][toC] = color[fromR][fromC];
+  board[fromR][fromC] = "";
+  color[fromR][fromC] = "";
 
   // Promote pawns
-  //if (board[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
-  //  board[toR][toC] = "Q";
-  //}
+  if (board[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
+    board[toR][toC] = "Q";
+  }
   
   let string = "";
   let emptySquares = 0;
@@ -275,6 +280,42 @@ function checkMove(board, color, fromC, fromR, toC, toR, turn) {
 
   return false;
 }
+function addMoves(board, color, turn) {
+  let allMoves = [];
+
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (board[r][c] != "" && color[r][c] == turn) {
+        switch (board[r][c]) {
+          case "K":
+            allMoves = allMoves.concat(addKingMoves(board, color, c, r, turn));
+            break;
+          case "Q":
+            allMoves = allMoves.concat(addRookMoves(board, color, c, r, turn));
+            allMoves = allMoves.concat(addBishopMoves(board, color, c, r, turn));
+            break;
+          case "R":
+            allMoves = allMoves.concat(addRookMoves(board, color, c, r, turn));
+            break;
+          case "B":
+            allMoves = allMoves.concat(addBishopMoves(board, color, c, r, turn));
+            break;
+          case "N":
+            allMoves = allMoves.concat(addKnightMoves(board, color, c, r, turn));
+            break;
+          case "P":
+            allMoves = allMoves.concat(addPawnMoves(board, color, c, r, turn));
+            break;
+          default:
+            console.error("Invalid piece.");
+            break;
+        }
+      }
+    }
+  }
+
+  return allMoves;
+}
 function checkKingMovement(board, fromC, fromR, toC, toR) {
   if (Math.abs(fromC - toC) > 1) {
     return false;
@@ -284,6 +325,54 @@ function checkKingMovement(board, fromC, fromR, toC, toR) {
   }
   // TODO: add castling
   return true;
+}
+function addKingMoves(board, color, fromC, fromR, turn) {
+  let addedMoves = [];
+  let toC = null;
+  let toR = null;
+  
+  if (fromC > 0) {
+    toC = fromC - 1;
+    toR = fromR;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromR > 0) {
+    toC = fromC;
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 1) {
+    toC = fromC + 1;
+    toR = fromR;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromR < SIZE - 1) {
+    toC = fromC;
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC > 0 && fromR > 0) {
+    toC = fromC - 1;
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 1 && fromR > 0) {
+    toC = fromC + 1;
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC > 0 && fromR < SIZE - 1) {
+    toC = fromC - 1;
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 1 && fromR < SIZE - 1) {
+    toC = fromC + 1;
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  
+  return addedMoves;
 }
 function checkRookMovement(board, fromC, fromR, toC, toR) {
   // Same column
@@ -317,6 +406,34 @@ function checkRookMovement(board, fromC, fromR, toC, toR) {
     return true;
   }
   return false;
+}
+function addRookMoves(board, color, fromC, fromR, turn) {
+  let addedMoves = [];
+  let toC = null;
+  let toR = null;
+  
+  for (toC = fromC + 1; toC < SIZE && toC - fromC <= 8; toC++) {
+    toR = fromR;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toC = fromC - 1; toC >= 0 && fromC - toC <= 8; toC--) {
+    toR = fromR;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toR = fromR + 1; toR < SIZE && toR - fromR <= 8; toR++) {
+    toC = fromC;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toR = fromR - 1; toR >= 0 && fromR - toR <= 8; toR--) {
+    toC = fromC;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  
+  return addedMoves;
 }
 function checkBishopMovement(board, fromC, fromR, toC, toR) {
   // R increasing, C increasing
@@ -393,9 +510,81 @@ function checkBishopMovement(board, fromC, fromR, toC, toR) {
   }
   return false;
 }
+function addBishopMoves(board, color, fromC, fromR, turn) {
+  let addedMoves = [];
+  let toC = null;
+  let toR = null;
+  
+  for (toC = fromC + 1, toR = fromR + 1; toC < SIZE && toR < SIZE && toR - fromR <= 8; toC++, toR++) {
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toC = fromC - 1, toR = fromR + 1; toC >= 0 && toR < SIZE && toR - fromR <= 8; toC--, toR++) {
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toC = fromC + 1, toR = fromR - 1; toC < SIZE && toR >= 0 && fromR - toR <= 8; toC++, toR--) {
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+  for (toC = fromC - 1, toR = fromR - 1; toC >= 0 && toR >= 0 && fromR - toR <= 8; toC--, toR--) {
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    else break;
+  }
+
+  return addedMoves;
+}
 function checkKnightMovement(board, fromC, fromR, toC, toR) {
   return (Math.abs(fromC - toC) == 2) && (Math.abs(fromR - toR) == 1) 
     || (Math.abs(fromC - toC) == 1) && (Math.abs(fromR - toR) == 2);
+}
+function addKnightMoves(board, color, fromC, fromR, turn) {
+  let addedMoves = [];
+  let toC = null;
+  let toR = null;
+
+  if (fromC > 0 && fromR > 1) {
+    toC = fromC - 1;
+    toR = fromR - 2;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC > 1 && fromR > 0) {
+    toC = fromC - 2;
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC > 1 && fromR < SIZE - 1) {
+    toC = fromC - 2;
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC > 0 && fromR < SIZE - 2) {
+    toC = fromC - 1;
+    toR = fromR + 2;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 1 && fromR < SIZE - 2) {
+    toC = fromC + 1;
+    toR = fromR + 2;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 2 && fromR < SIZE - 1) {
+    toC = fromC + 2;
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 2 && fromR > 0) {
+    toC = fromC + 2;
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+  if (fromC < SIZE - 1 && fromR > 1) {
+    toC = fromC + 1;
+    toR = fromR - 2;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+  }
+
+  return addedMoves;
 }
 function checkPawnMovement(board, fromC, fromR, toC, toR) {
   // Move vertically
@@ -465,6 +654,13 @@ function checkPawnMovement(board, fromC, fromR, toC, toR) {
   }
   return false;
 }
+function addPawnMoves(board, color, fromC, fromR, turn) {
+  let addedMoves = [];
+  let toC = null;
+  let toR = null;
+
+  return addedMoves;
+}
 function returnControlColors(color, pieceColor) {
   let controlColors = [];
   for (let r = 4; r < SIZE - 4; r++) {
@@ -513,4 +709,8 @@ function isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) {
   }
 
   return true;
+}
+function getRandomMove(board, color, turn) {
+  let allMoves = addMoves(board, color, turn);
+  return allMoves[Math.floor(Math.random() * allMoves.length)];
 }
