@@ -414,22 +414,34 @@ function addRookMoves(board, color, fromC, fromR, turn) {
   
   for (toC = fromC + 1; toC < SIZE && toC - fromC <= 8; toC++) {
     toR = fromR;
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toC = fromC - 1; toC >= 0 && fromC - toC <= 8; toC--) {
     toR = fromR;
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toR = fromR + 1; toR < SIZE && toR - fromR <= 8; toR++) {
     toC = fromC;
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toR = fromR - 1; toR >= 0 && fromR - toR <= 8; toR--) {
     toC = fromC;
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   
@@ -516,19 +528,31 @@ function addBishopMoves(board, color, fromC, fromR, turn) {
   let toR = null;
   
   for (toC = fromC + 1, toR = fromR + 1; toC < SIZE && toR < SIZE && toR - fromR <= 8; toC++, toR++) {
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toC = fromC - 1, toR = fromR + 1; toC >= 0 && toR < SIZE && toR - fromR <= 8; toC--, toR++) {
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toC = fromC + 1, toR = fromR - 1; toC < SIZE && toR >= 0 && fromR - toR <= 8; toC++, toR--) {
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
   for (toC = fromC - 1, toR = fromR - 1; toC >= 0 && toR >= 0 && fromR - toR <= 8; toC--, toR--) {
-    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) addedMoves.push({fromC, fromR, toC, toR});
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn)) {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (board[toR][toC] != "") break;
+    }
     else break;
   }
 
@@ -658,6 +682,104 @@ function addPawnMoves(board, color, fromC, fromR, turn) {
   let addedMoves = [];
   let toC = null;
   let toR = null;
+
+  // Move vertically
+  toR = fromR;
+  if (fromC < 7) {
+    // Move up one
+    toC = fromC + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (fromC < 2) {
+        // Move up two
+        toC = fromC + 2;
+        if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+          addedMoves.push({fromC, fromR, toC, toR});
+        }
+      }
+    }
+  }
+  if (fromC > 8) {
+    // Move down one
+    toC = fromC - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (fromC > 13) {
+        // Move down two
+        toC = fromC - 2;
+        if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+          addedMoves.push({fromC, fromR, toC, toR});
+        }
+      }
+    }
+  }
+  // Move horizontally
+  toC = fromC;
+  if (fromR < 7) {
+    // Move right one
+    toR = fromR + 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (fromR < 2) {
+        // Move right two
+        toR = fromR + 2;
+        if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+          addedMoves.push({fromC, fromR, toC, toR});
+        }
+      }
+    }
+  }
+  if (fromR > 8) {
+    // Move left one
+    toR = fromR - 1;
+    if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+      addedMoves.push({fromC, fromR, toC, toR});
+      if (fromR > 13) {
+        // Move left two
+        toR = fromR - 2;
+        if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] == "") {
+          addedMoves.push({fromC, fromR, toC, toR});
+        }
+      }
+    }
+  }
+  // Capture diagonally
+  if (fromR <= 7) {
+    if (fromC <= 7) {
+      // Capture up right
+      toR = fromR + 1;
+      toC = fromC + 1;
+      if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] != "") {
+        addedMoves.push({fromC, fromR, toC, toR});
+      }
+    }
+    if (fromC >= 8) {
+      // Capture up left
+      toR = fromR + 1;
+      toC = fromC - 1;
+      if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] != "") {
+        addedMoves.push({fromC, fromR, toC, toR});
+      }
+    }
+  }
+  if (fromR >= 8) {
+    if (fromC <= 7) {
+      // Capture down right
+      toR = fromR - 1;
+      toC = fromC + 1;
+      if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] != "") {
+        addedMoves.push({fromC, fromR, toC, toR});
+      }
+    }
+    if (fromC >= 8) {
+      // Capture down left
+      toR = fromR - 1;
+      toC = fromC - 1;
+      if (isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) && board[toR][toC] != "") {
+        addedMoves.push({fromC, fromR, toC, toR});
+      }
+    }
+  }
 
   return addedMoves;
 }
