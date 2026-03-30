@@ -1,6 +1,8 @@
 const colorString = "wksgoxpnyzru";
 const pieceString = "KQRBNP";
 const SIZE = 16;
+const DEPTH = 1;
+const INF = 10000;
 const sColor = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -19,6 +21,7 @@ const sColor = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ];
+let engineMoveChoice = null;
 
 const express = require("express");
 const app = express();
@@ -100,24 +103,25 @@ function engineMove(inputString, engine) {
   }
   turn = inputString.charAt(0);
 
-  let engineMove = null;
   switch (engine) {
     case 1:
-      engineMove = getRandomMove(board, color, turn);
-      console.log(`Engine moved from ${String.fromCharCode(engineMove.fromC + 65)}${16 - engineMove.fromR} to ${String.fromCharCode(engineMove.toC + 65)}${16 - engineMove.toR}.`);
+      getRandomMove(board, color, turn);
       break;
+    case 2:
+      alphaBetaMax(-INF, INF, DEPTH, board, color, turn);
     default:
       console.error("Unknown engine level.");
       break;
   }
-  
+  console.log(`Engine moved from ${String.fromCharCode(engineMoveChoice.fromC + 65)}${16 - engineMoveChoice.fromR} to ${String.fromCharCode(engineMoveChoice.toC + 65)}${16 - engineMoveChoice.toR}.`);
+
   // Switch turns
   turn = turn === "w" ? "k" : "w";
   
-  let fromC = engineMove.fromC;
-  let fromR = engineMove.fromR;
-  let toC = engineMove.toC;
-  let toR = engineMove.toR;
+  let fromC = engineMoveChoice.fromC;
+  let fromR = engineMoveChoice.fromR;
+  let toC = engineMoveChoice.toC;
+  let toR = engineMoveChoice.toR;
 
   board[toR][toC] = board[fromR][fromC];
   color[toR][toC] = color[fromR][fromC];
@@ -834,5 +838,46 @@ function isAvailableSquare(board, color, fromC, fromR, toC, toR, turn) {
 }
 function getRandomMove(board, color, turn) {
   let allMoves = addMoves(board, color, turn);
-  return allMoves[Math.floor(Math.random() * allMoves.length)];
+  engineMoveChoice = allMoves[Math.floor(Math.random() * allMoves.length)];
+}
+function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
+  if (depthleft == 0) return evaluate(board, color);
+  let bestValue = -INF;
+  let newTurn = turn === "w" ? "k" : "w";
+  //for ( all moves) {
+    // Make the move
+    let newBoard = [];
+    let newColor = [];
+    let score = alphaBetaMin( alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
+    if(score > bestValue) {
+      if (depthleft == DEPTH) {
+        engineMoveChoice = move;
+      }
+      bestValue = score;
+      if(score > alpha) alpha = score; // alpha acts like max in MiniMax
+    }
+    if(score >= beta) return score;   // fail soft beta-cutoff
+  //}
+  return bestValue;
+}
+function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
+  if ( depthleft == 0 ) return -evaluate();
+  let bestValue = INF;
+  let newTurn = turn === "w" ? "k" : "w";
+  //for ( all moves) {
+    // Make the move
+    let newBoard = [];
+    let newColor = [];
+    let score = alphaBetaMax( alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
+    if(score < bestValue) {
+      bestValue = score;
+      if(score < beta) beta = score; // beta acts like min in MiniMax
+    }
+    if(score <= alpha) return score; // fail soft alpha-cutoff, break can also be used here
+  //}
+  return bestValue;
+}
+function evaluate(board, color) {
+  let score = 0;
+  return score;
 }
