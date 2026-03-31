@@ -250,7 +250,7 @@ window.onload = function() {
         } else {
           const from = String.fromCharCode(Number(selected.split("-")[2]) + 65) + (16 - selected.split("-")[1]).toString();
           const to = String.fromCharCode(Number(square.id.split("-")[2]) + 65) + (16 - square.id.split("-")[1]).toString();
-          const engineLevel = gameMode === "pvc" ? 1 : 0;
+          const engineLevel = gameMode === "pvc" ? 2 : 0;   // Set engine level based on game mode
           
           document.getElementById("status").textContent = `You moved ${from} → ${to}`;
           fetch("/move", {

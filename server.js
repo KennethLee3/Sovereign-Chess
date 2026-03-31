@@ -1,5 +1,7 @@
 const colorString = "wksgoxpnyzru";
+let colorOwnerMap = { 'w': 'w', 'k': 'k', 's': '-', 'g': '-', 'o': '-', 'x': '-', 'p': '-', 'n': '-', 'y': '-', 'z': '-', 'r': '-', 'u': '-' };
 const pieceString = "KQRBNP";
+let pieceValueMap = { 'K': 1000, 'Q': 9, 'R': 5, 'B': 3, 'N': 3, 'P': 1 };
 const SIZE = 16;
 const DEPTH = 1;
 const INF = 10000;
@@ -109,6 +111,7 @@ function engineMove(inputString, engine) {
       break;
     case 2:
       alphaBetaMax(-INF, INF, DEPTH, board, color, turn);
+      break;
     default:
       console.error("Unknown engine level.");
       break;
@@ -879,5 +882,21 @@ function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
 }
 function evaluate(board, color) {
   let score = 0;
+  
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (board[r][c] != "") {
+        switch (colorOwnerMap[color[r][c]]) {
+          case "w":
+            score += pieceValueMap[board[r][c]];
+            break;
+          case "k":
+            score -= pieceValueMap[board[r][c]];
+            break;
+        }
+      }
+    }
+  }
+
   return score;
 }
