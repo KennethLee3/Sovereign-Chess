@@ -110,6 +110,7 @@ function engineMove(inputString, engine) {
       getRandomMove(board, color, turn);
       break;
     case 2:
+      getRandomMove(board, color, turn);
       alphaBetaMax(-INF, INF, DEPTH, board, color, turn);
       break;
     default:
@@ -849,12 +850,18 @@ function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
   let newTurn = turn === "w" ? "k" : "w";
   //for ( all moves) {
     // Make the move
-    let newBoard = [];
-    let newColor = [];
-    let score = alphaBetaMin( alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
+    let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
+    let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        newBoard[r][c] = board[r][c];
+        newColor[r][c] = color[r][c];
+      }
+    }
+    let score = alphaBetaMin(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
     if(score > bestValue) {
       if (depthleft == DEPTH) {
-        engineMoveChoice = move;
+        //engineMoveChoice = move;
       }
       bestValue = score;
       if(score > alpha) alpha = score; // alpha acts like max in MiniMax
@@ -864,14 +871,20 @@ function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
   return bestValue;
 }
 function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
-  if ( depthleft == 0 ) return -evaluate();
+  if (depthleft == 0) return -evaluate(board, color);
   let bestValue = INF;
   let newTurn = turn === "w" ? "k" : "w";
   //for ( all moves) {
     // Make the move
-    let newBoard = [];
-    let newColor = [];
-    let score = alphaBetaMax( alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
+    let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
+    let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        newBoard[r][c] = board[r][c];
+        newColor[r][c] = color[r][c];
+      }
+    }
+    let score = alphaBetaMax(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
     if(score < bestValue) {
       bestValue = score;
       if(score < beta) beta = score; // beta acts like min in MiniMax
