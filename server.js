@@ -3,7 +3,7 @@ let colorOwnerMap = { 'w': 'w', 'k': 'k', 's': '-', 'g': '-', 'o': '-', 'x': '-'
 const pieceString = "KQRBNP";
 let pieceValueMap = { 'K': 1000, 'Q': 9, 'R': 5, 'B': 3, 'N': 3, 'P': 1 };
 const SIZE = 16;
-const DEPTH = 1;
+const DEPTH = 3;
 const INF = 10000;
 const sColor = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -24,6 +24,7 @@ const sColor = [
     [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ];
 let engineMoveChoice = null;
+let movesSearched = 0;
 
 const express = require("express");
 const app = express();
@@ -118,6 +119,7 @@ function engineMove(inputString, engine) {
       break;
   }
   console.log(`Engine moved from ${String.fromCharCode(engineMoveChoice.fromC + 65)}${16 - engineMoveChoice.fromR} to ${String.fromCharCode(engineMoveChoice.toC + 65)}${16 - engineMoveChoice.toR}.`);
+  console.log(`Moves searched: ${movesSearched}`);
 
   // Switch turns
   turn = turn === "w" ? "k" : "w";
@@ -845,11 +847,16 @@ function getRandomMove(board, color, turn) {
   engineMoveChoice = allMoves[Math.floor(Math.random() * allMoves.length)];
 }
 function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
-  if (depthleft == 0) return evaluate(board, color);
+  if (depthleft == 0) {
+    movesSearched++;
+    return evaluate(board, color);
+  }
   let bestValue = -INF;
   let newTurn = turn === "w" ? "k" : "w";
-  //for ( all moves) {
-    // Make the move
+
+  let allMoves = addMoves(board, color, turn);
+  for (let m = 0; m < allMoves.length; m++) {
+
     let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
     let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
     for (let r = 0; r < SIZE; r++) {
@@ -858,24 +865,43 @@ function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
         newColor[r][c] = color[r][c];
       }
     }
+
+    let move = allMoves[m];
+    let fromC = move.fromC;
+    let fromR = move.fromR;
+    let toC = move.toC;
+    let toR = move.toR;
+    newBoard[toR][toC] = newBoard[fromR][fromC];
+    newColor[toR][toC] = newColor[fromR][fromC];
+    newBoard[fromR][fromC] = "";
+    newColor[fromR][fromC] = "";
+    // Promote pawns
+    if (newBoard[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
+      newBoard[toR][toC] = "Q";
+    }
+
     let score = alphaBetaMin(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
     if(score > bestValue) {
       if (depthleft == DEPTH) {
-        //engineMoveChoice = move;
+        engineMoveChoice = move;
       }
       bestValue = score;
       if(score > alpha) alpha = score; // alpha acts like max in MiniMax
     }
     if(score >= beta) return score;   // fail soft beta-cutoff
-  //}
+  }
   return bestValue;
 }
 function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
-  if (depthleft == 0) return -evaluate(board, color);
+  if (depthleft == 0) {
+    movesSearched++;
+    return -evaluate(board, color);
+  }
   let bestValue = INF;
   let newTurn = turn === "w" ? "k" : "w";
-  //for ( all moves) {
-    // Make the move
+  let allMoves = addMoves(board, color, turn);
+  for (let m = 0; m < allMoves.length; m++) {
+
     let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
     let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
     for (let r = 0; r < SIZE; r++) {
@@ -884,13 +910,28 @@ function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
         newColor[r][c] = color[r][c];
       }
     }
+
+    let move = allMoves[m];
+    let fromC = move.fromC;
+    let fromR = move.fromR;
+    let toC = move.toC;
+    let toR = move.toR;
+    newBoard[toR][toC] = newBoard[fromR][fromC];
+    newColor[toR][toC] = newColor[fromR][fromC];
+    newBoard[fromR][fromC] = "";
+    newColor[fromR][fromC] = "";
+    // Promote pawns
+    if (newBoard[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
+      newBoard[toR][toC] = "Q";
+    }
+
     let score = alphaBetaMax(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
     if(score < bestValue) {
       bestValue = score;
       if(score < beta) beta = score; // beta acts like min in MiniMax
     }
     if(score <= alpha) return score; // fail soft alpha-cutoff, break can also be used here
-  //}
+  }
   return bestValue;
 }
 function evaluate(board, color) {
