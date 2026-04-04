@@ -849,41 +849,20 @@ function getRandomMove(board, color, turn) {
 function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
   if (depthleft == 0) {
     movesSearched++;
-    return evaluate(board, color);
+    return evaluate(board, color, turn);
   }
   let bestValue = -INF;
-  let newTurn = turn === "w" ? "k" : "w";
 
   let allMoves = addMoves(board, color, turn);
   for (let m = 0; m < allMoves.length; m++) {
+    
+    let moveData = makeMove(board, color, allMoves[m]);
+    let score = alphaBetaMin(alpha, beta, depthleft - 1, board, color, turn === "w" ? "k" : "w");
+    unmakeMove(board, color, allMoves[m], moveData);
 
-    let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
-    let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
-    for (let r = 0; r < SIZE; r++) {
-      for (let c = 0; c < SIZE; c++) {
-        newBoard[r][c] = board[r][c];
-        newColor[r][c] = color[r][c];
-      }
-    }
-
-    let move = allMoves[m];
-    let fromC = move.fromC;
-    let fromR = move.fromR;
-    let toC = move.toC;
-    let toR = move.toR;
-    newBoard[toR][toC] = newBoard[fromR][fromC];
-    newColor[toR][toC] = newColor[fromR][fromC];
-    newBoard[fromR][fromC] = "";
-    newColor[fromR][fromC] = "";
-    // Promote pawns
-    if (newBoard[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
-      newBoard[toR][toC] = "Q";
-    }
-
-    let score = alphaBetaMin(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
     if(score > bestValue) {
       if (depthleft == DEPTH) {
-        engineMoveChoice = move;
+        engineMoveChoice = allMoves[m];
       }
       bestValue = score;
       if(score > alpha) alpha = score; // alpha acts like max in MiniMax
@@ -895,37 +874,16 @@ function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
 function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
   if (depthleft == 0) {
     movesSearched++;
-    return -evaluate(board, color);
+    return -evaluate(board, color, turn);
   }
   let bestValue = INF;
-  let newTurn = turn === "w" ? "k" : "w";
+
+
   let allMoves = addMoves(board, color, turn);
   for (let m = 0; m < allMoves.length; m++) {
-
-    let newBoard = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
-    let newColor = Array.from({ length: SIZE }, () => Array(SIZE).fill(""));
-    for (let r = 0; r < SIZE; r++) {
-      for (let c = 0; c < SIZE; c++) {
-        newBoard[r][c] = board[r][c];
-        newColor[r][c] = color[r][c];
-      }
-    }
-
-    let move = allMoves[m];
-    let fromC = move.fromC;
-    let fromR = move.fromR;
-    let toC = move.toC;
-    let toR = move.toR;
-    newBoard[toR][toC] = newBoard[fromR][fromC];
-    newColor[toR][toC] = newColor[fromR][fromC];
-    newBoard[fromR][fromC] = "";
-    newColor[fromR][fromC] = "";
-    // Promote pawns
-    if (newBoard[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
-      newBoard[toR][toC] = "Q";
-    }
-
-    let score = alphaBetaMax(alpha, beta, depthleft - 1, newBoard, newColor, newTurn);
+    let moveData = makeMove(board, color, allMoves[m]);
+    let score = alphaBetaMax(alpha, beta, depthleft - 1, board, color, turn === "w" ? "k" : "w");
+    unmakeMove(board, color, allMoves[m], moveData);
     if(score < bestValue) {
       bestValue = score;
       if(score < beta) beta = score; // beta acts like min in MiniMax
@@ -934,7 +892,7 @@ function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
   }
   return bestValue;
 }
-function evaluate(board, color) {
+function evaluate(board, color, turn) {
   let score = 0;
   
   for (let r = 0; r < SIZE; r++) {
@@ -952,5 +910,42 @@ function evaluate(board, color) {
     }
   }
 
-  return score;
+  let multiplier = turn === "w" ? 1 : -1;
+  return score * multiplier;
+}
+function makeMove(board, color, move) {
+  let fromC = move.fromC;
+  let fromR = move.fromR;
+  let toC = move.toC;
+  let toR = move.toR;
+
+  let moveData = {
+    capturedPiece: board[toR][toC],
+    capturedColor: color[toR][toC],
+    promotion: false
+  };
+
+  board[toR][toC] = board[fromR][fromC];
+  color[toR][toC] = color[fromR][fromC];
+  board[fromR][fromC] = "";
+  color[fromR][fromC] = "";
+  if (board[toR][toC] == "P" && toR >= 6 && toR < 10 && toC >= 6 && toC < 10) {
+    board[toR][toC] = "Q";
+    moveData.promotion = true;
+  }
+
+  return moveData;
+}
+function unmakeMove(board, color, move, moveData) {
+  let fromC = move.fromC;
+  let fromR = move.fromR;
+  let toC = move.toC;
+  let toR = move.toR;
+  board[fromR][fromC] = board[toR][toC];
+  color[fromR][fromC] = color[toR][toC];
+  board[toR][toC] = moveData.capturedPiece;
+  color[toR][toC] = moveData.capturedColor;
+  if (moveData.promotion) {
+    board[fromR][fromC] = "P";
+  }
 }
