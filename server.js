@@ -854,6 +854,7 @@ function alphaBetaMax(alpha, beta, depthleft, board, color, turn) {
   let bestValue = -INF;
 
   let allMoves = addMoves(board, color, turn);
+  allMoves = orderMoves(allMoves);
   for (let m = 0; m < allMoves.length; m++) {
     
     let moveData = makeMove(board, color, allMoves[m]);
@@ -880,6 +881,7 @@ function alphaBetaMin(alpha, beta, depthleft, board, color, turn) {
 
 
   let allMoves = addMoves(board, color, turn);
+  allMoves = orderMoves(allMoves);
   for (let m = 0; m < allMoves.length; m++) {
     let moveData = makeMove(board, color, allMoves[m]);
     let score = alphaBetaMax(alpha, beta, depthleft - 1, board, color, turn === "w" ? "k" : "w");
@@ -948,4 +950,17 @@ function unmakeMove(board, color, move, moveData) {
   if (moveData.promotion) {
     board[fromR][fromC] = "P";
   }
+}
+function orderMoves(moves) {
+  for (let i = 0; i < moves.length - 1; i++) {
+    for (let j = i + 1; j < moves.length; j++) {
+      if (moveDistance(moves[i]) < moveDistance(moves[j])) {
+        [moves[i], moves[j]] = [moves[j], moves[i]];
+      }
+    }
+  }
+  return moves;
+}
+function moveDistance(move) {
+  return Math.max(Math.abs(move.toC - move.fromC), Math.abs(move.toR - move.fromR));
 }

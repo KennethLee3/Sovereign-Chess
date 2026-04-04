@@ -1,5 +1,5 @@
 let selected = null;
-let gameMode = "pvp";
+let gameMode = "pvc";
 const pieceMap = { 'K': '♚', 'Q': '♛', 'R': '♜', 'B': '♝', 'N': '♞', 'P': '♟', '': '', '♚': 'K', '♛': 'Q', '♜': 'R', '♝': 'B', '♞': 'N', '♟': 'P' };
 const colorString = "wksgoxpnyzru";
 const pieceString = "KQRBNP";
